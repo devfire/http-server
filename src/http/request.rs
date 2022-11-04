@@ -1,7 +1,7 @@
 use super::method::Method;
 use std::convert::TryFrom;
 use std::error::Error;
-use std::fmt::{Display, Formatter, Result as FmtResult, write};
+use std::fmt::{Display, Formatter, Result as FmtResult, write, Debug};
 
 pub struct Request {
     path: String,
@@ -16,7 +16,7 @@ impl Request {
     }
 }
 impl TryFrom<&[u8]> for Request {
-    type Error = String;
+    type Error = ParseError;
 
     // sample request:
     // GET /search HTTP/1.1
@@ -39,8 +39,18 @@ impl Display for ParseError {
     }
 }
 
+impl Debug for ParseError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        // unimplemented!()
+        write!(f, "{}", self.message())
+    }
+}
+
+
 impl ParseError{
     fn message(&self) -> &str {
+        // Because 'match' is the last expression in the fxn body,
+        // it is automatically returned!
         match self {
             Self::InvalidRequest => "Invalid Request",
             Self::InvalidEncoding => "Invalid Encoding",
