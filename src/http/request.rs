@@ -1,3 +1,8 @@
+use std::str::Utf8Error;
+use std::str;
+
+use crate::http::request;
+
 use super::method::Method;
 use std::convert::TryFrom;
 use std::error::Error;
@@ -20,8 +25,11 @@ impl TryFrom<&[u8]> for Request {
 
     // sample request:
     // GET /search HTTP/1.1
-    fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
-        unimplemented!();
+    fn try_from(buf: &[u8]) -> Result<Self, Self::Error> {
+
+        
+        let request = str::from_utf8(buf)?;
+        unimplemented!()
     }
 }
 
@@ -59,6 +67,12 @@ impl ParseError{
         }
     }
 }
-impl Error for ParseError {
 
+impl From<Utf8Error> for ParseError {
+    fn from(_: Utf8Error) -> Self {
+        Self::InvalidEncoding
+    }
 }
+ impl Error for ParseError {
+
+ }
