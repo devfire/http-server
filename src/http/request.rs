@@ -29,8 +29,26 @@ impl TryFrom<&[u8]> for Request {
 
         
         let request = str::from_utf8(buf)?;
+        // Shadowing request - request
+        let (method, request) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
+        let (path, request) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
         unimplemented!()
     }
+}
+
+// return a tuple. First part is the first word,
+// the second part is the rest of the string.
+// We wrap the return part in Option to be able to return NOTHING.
+fn get_next_word(request: &str) -> Option<(&str, &str)> {
+    for (i, c) in request.chars().enumerate() {
+        if c == ' ' || c == '\r' {
+            // return a tuple:
+            // first word, skip the space ' ' and then the rest
+            return Some((&request[..i], &request[i + 1..]));
+        }
+    }   
+
+    None
 }
 
 pub enum ParseError {
