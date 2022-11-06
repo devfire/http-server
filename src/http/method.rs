@@ -1,3 +1,4 @@
+
 use std::str::FromStr;
 pub enum Method {
     GET,
@@ -27,8 +28,6 @@ impl FromStr for Method {
             "HEAD" => Ok(Self::HEAD),
         _ => Err(MethodError),
         }
-
-        let method: Method = method.parse()?;
     }
 }
 
